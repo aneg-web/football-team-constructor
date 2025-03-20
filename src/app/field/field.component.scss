@@ -1,0 +1,447 @@
+.field {
+  width: 100%;
+  height: 100vh;
+  background-image: url('../../assets/field-bg.svg');
+  background-repeat: no-repeat;
+  background-size: 85%;
+  background-position: center;
+  position: relative;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.position-circle {
+  width: 60px;
+  height: 60px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 2px dashed rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  transition: all 0.2s ease-in-out;
+}
+
+.position-circle:empty:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+  border: 2px dashed rgba(0, 0, 0, 0.5);
+  animation: pulse 1.5s infinite;
+}
+
+.position-circle:not(:empty) {
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  width: 80px;
+  height: 80px;
+}
+
+.position-circle::after {
+  content: attr(data-formation-position);
+  position: absolute;
+  bottom: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: bold;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 10px;
+  z-index: 2;
+}
+
+.position-circle:not(:empty)::after {
+  display: none;
+}
+
+.player-info {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 60px;
+  height: 60px;
+  transition: all 0.3s ease;
+  transform-origin: center;
+  cursor: grab;
+}
+
+.player-info::before {
+  content: attr(data-player-name) " #" attr(data-player-number);
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: bold;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 10px;
+  z-index: 2;
+}
+
+.player-info::after {
+  content: attr(data-player-position);
+  position: absolute;
+  bottom: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: bold;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 10px;
+  z-index: 2;
+}
+
+.player-info.position-mismatch::after {
+  background-color: rgba(220, 53, 69, 0.8);
+  color: white;
+  animation: pulse-red 1.5s infinite;
+}
+
+.player-info.cdk-drag-entered {
+  animation: dropIn 0.4s ease-out;
+}
+
+.player-info img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+  background-color: #f8f8f8;
+}
+
+.player-info:hover img {
+  transform: scale(1.05);
+  border-color: #4CAF50;
+}
+
+.player-info.position-mismatch img {
+  border-color: rgba(220, 53, 69, 0.5);
+}
+
+.player-info.position-mismatch:hover img {
+  border-color: rgba(220, 53, 69, 0.8);
+}
+
+.player-info span {
+  display: none;
+}
+
+.drag-over {
+  border: 2px solid #4CAF50;
+  background-color: rgba(76, 175, 80, 0.2);
+  box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+  animation: pulse 1s infinite;
+}
+
+.player-menu {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 280px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: none;
+  border-radius: 12px;
+  padding: 15px;
+  background: linear-gradient(135deg, #2c3e50 0%, #1a2530 100%);
+  color: white;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  transition: all 0.3s ease;
+  scrollbar-width: thin;
+  scrollbar-color: #666 #333;
+}
+
+.player-menu::-webkit-scrollbar {
+  width: 8px;
+}
+
+.player-menu::-webkit-scrollbar-track {
+  background: #333;
+  border-radius: 10px;
+}
+
+.player-menu::-webkit-scrollbar-thumb {
+  background: #666;
+  border-radius: 10px;
+}
+
+.player-menu::before {
+  content: "Available Players";
+  display: block;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  letter-spacing: 1px;
+}
+
+.player-item {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  margin: 8px 0;
+  cursor: grab;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(to right, #3a4a5c, #2c3e50);
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.player-item:hover {
+  background: linear-gradient(to right, #3f5369, #34495e);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.player-item:active {
+  cursor: grabbing;
+  transform: translateY(0px) scale(0.98);
+}
+
+.player-item img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 12px;
+  border: 2px solid white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  object-fit: cover;
+  transition: all 0.2s ease;
+}
+
+.player-item:hover img {
+  border-color: #4CAF50;
+}
+
+.player-item .player-info {
+  display: flex;
+  flex-direction: column;
+  background: none;
+  box-shadow: none;
+  padding: 0;
+  align-items: flex-start;
+  width: auto;
+  height: auto;
+}
+
+.player-item .player-info::before,
+.player-item .player-info::after {
+  display: none;
+}
+
+.player-item .player-info strong {
+  font-size: 14px;
+  color: white;
+  margin-bottom: 3px;
+  display: block;
+}
+
+.player-item .player-info span {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  text-shadow: none;
+  display: block;
+}
+
+.remove-btn {
+  background: rgba(255, 0, 0, 0.2);
+  border: none;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  font-size: 14px;
+  color: white;
+  opacity: 0;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  z-index: 5;
+}
+
+.player-info:hover .remove-btn {
+  opacity: 1;
+}
+
+.remove-btn:hover {
+  background: rgba(255, 0, 0, 0.8);
+  transform: scale(1.1);
+}
+
+.cdk-drag-preview {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  opacity: 0.8;
+  border-radius: 8px;
+  z-index: 1100;
+}
+
+.cdk-drag-placeholder {
+  opacity: 0.3;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms ease;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+  }
+}
+
+@keyframes pulse-red {
+  0% {
+    box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(220, 53, 69, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+  }
+}
+
+@keyframes dropIn {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.formation-name {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-weight: bold;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 1200px) {
+  .field {
+    height: 85vh;
+    background-size: 80%;
+  }
+  
+  .position-circle:not(:empty) {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .player-info img {
+    width: 55px;
+    height: 55px;
+  }
+}
+
+@media (max-width: 992px) {
+  .field {
+    height: 80vh;
+    background-size: 75%;
+  }
+  
+  .player-menu {
+    width: 250px;
+  }
+  
+  .position-circle:not(:empty) {
+    width: 65px;
+    height: 65px;
+  }
+  
+  .player-info img {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+@media (max-width: 768px) {
+  .field {
+    height: 70vh;
+    background-size: 70%;
+  }
+  
+  .position-circle:not(:empty) {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .player-info img {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .player-info::before,
+  .player-info::after,
+  .position-circle::after {
+    font-size: 9px;
+  }
+  
+  .player-menu {
+    width: 200px;
+  }
+}
+
+@media (max-width: 576px) {
+  .field {
+    height: 60vh;
+    background-size: 65%;
+  }
+  
+  .position-circle:not(:empty) {
+    width: 55px;
+    height: 55px;
+  }
+  
+  .player-info img {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .player-menu {
+    top: 10px;
+    left: 10px;
+    width: 180px;
+  }
+}

@@ -1,0 +1,41 @@
+<div class="player-menu" cdkDropList 
+     id="players-list"
+     [cdkDropListData]="availablePlayers"
+     [cdkDropListConnectedTo]="connectedDropLists"
+     (cdkDropListDropped)="onDrop($event)">
+
+  <div *ngFor="let player of availablePlayers" cdkDrag class="player-item">
+    <img [src]="player.photo" alt="{{ player.name }}">
+    <div class="player-info">
+      <strong>{{ player.name }} {{ player.surname }}</strong>
+      <span>#{{ player.number }} - {{ player.position }}</span>
+    </div>
+  </div>
+</div>
+
+<div class="field">
+  <div *ngFor="let position of formation; let i = index"
+       cdkDropList
+       [cdkDropListData]="field_players"
+       [cdkDropListConnectedTo]="connectedDropLists"
+       (cdkDropListDropped)="onDrop($event, i)"
+       [id]="'field-' + i"
+       class="position-circle"
+       [attr.data-formation-position]="getFormationPosition(i)"
+       [ngStyle]="{'top': position.y + '%', 'left': position.x + '%'}">
+    
+    <div *ngIf="field_players[i]" 
+         class="player-info"
+         [ngClass]="{'position-mismatch': isPositionMismatch(i)}" 
+         cdkDrag
+         [attr.data-player-name]="field_players[i].surname"
+         [attr.data-player-number]="field_players[i].number"
+         [attr.data-player-position]="field_players[i].position">
+      <img [src]="field_players[i].photo" alt="{{ field_players[i].name }}">
+      <span>{{ field_players[i].name }} {{ field_players[i].surname }}</span>
+      <button class="remove-btn" (click)="removePlayer(i)">
+        <i class="bi bi-x"></i>
+      </button>
+    </div>
+  </div>
+</div>
